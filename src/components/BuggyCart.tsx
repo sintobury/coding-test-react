@@ -31,12 +31,25 @@ const BuggyCart: React.FC = () => {
   const [items, setItems] = useState<CartItem[]>(initialItems);
 
   // 버그가 있는 Handler
-  const handleIncreaseQuantity = (itemId: number) => {
+  /*const handleIncreaseQuantity = (itemId: number) => {
     const itemToUpdate = items.find(item => item.id === itemId);
     if (itemToUpdate) {
-      itemToUpdate.quantity += 1;
-      setItems(items);
+      itemToUpdate.quantity += 1; //기존 상태 객체의 값을 직접 변경
+      setItems(items); //기존과 동일한 참조값을 전달
     }
+  };*/
+
+  // 수정된 Handler
+  const handleIncreaseQuantity = (itemId: number) => {
+    // 함수형 업데이트로 이전 상태 값을 안전하게 참조
+    setItems(prevItems => 
+      prevItems.map(item => 
+        item.id === itemId 
+          ? { ...item, quantity: item.quantity + 1 } // 새로운 객체 생성 (불변성 유지)
+          : item // 변경 없는 항목은 그대로 유지
+      )
+    );
+    // map을 통해 새로운 객체를 전달받아 item의 변경을 react가 감지가능
   };
 
   const totalPrice = useMemo(() => {

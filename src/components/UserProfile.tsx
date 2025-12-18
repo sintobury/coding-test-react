@@ -42,10 +42,82 @@ interface UserProfileProps {
  * 4. CSS 모듈을 사용하여 스타일을 관리하세요.
  *
  */
+
+// 1. ProfileHeader: 상단 아바타 및 이름 영역
+const ProfileHeader = ({ avatarUrl, name, username }: { avatarUrl: string; name: string; username: string }) => (
+  <header className={styles.profileHeader}>
+    <div className={styles.avatarContainer}>
+      <img src={avatarUrl} alt={`${name}'s avatar`} className={styles.avatar} />
+    </div>
+    <div className={styles.userInfoContainer}>
+      <h2 className={styles.username}>{username}</h2>
+      <button className={styles.editProfileButton}>프로필 편집</button>
+    </div>
+  </header>
+);
+
+// 2. ProfileBio: 상세 소개 영역
+const ProfileBio = ({ name, bio }: { name: string; bio: string }) => (
+  <section className={styles.userInfoSection}>
+    <h1 className={styles.name}>{name}</h1>
+    <p className={styles.bio}>{bio}</p>
+  </section>
+);
+
+// 3. ProfileStats: 통계 데이터 영역
+const ProfileStats = ({ stats }: { stats: UserStats }) => {
+  const statItems = [
+    { label: '게시물', value: stats.posts },
+    { label: '팔로워', value: stats.followers },
+    { label: '팔로잉', value: stats.following },
+  ];
+
+  return (
+    <section className={styles.statsSection}>
+      {statItems.map((item) => (
+        <div key={item.label} className={styles.statItem}>
+          <span className={styles.statValue}>{item.value}</span>
+          <span className={styles.statLabel}>{item.label}</span>
+        </div>
+      ))}
+    </section>
+  );
+};
+
+// 4. PostGrid: 게시물 그리드 영역
+const PostGrid = ({ posts }: { posts: Post[] }) => (
+  <main className={styles.postsGrid}>
+    {posts.map(post => (
+      <div key={post.id} className={styles.postItem}>
+        <img src={post.imageUrl} alt={post.caption} className={styles.postImage} />
+      </div>
+    ))}
+  </main>
+);
+
+// 메인 컴포넌트: 조립(Composition)
 const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
   return (
     <div className={styles.profileContainer}>
-      {/* 1. 프로필 헤더 */}
+      <ProfileHeader 
+        avatarUrl={user.avatarUrl} 
+        name={user.name} 
+        username={user.username} 
+      />
+      <ProfileBio 
+        name={user.name} 
+        bio={user.bio} 
+      />
+      <ProfileStats stats={stats} />
+      <PostGrid posts={posts} />
+    </div>
+  );
+};
+
+/*const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
+  return (
+    <div className={styles.profileContainer}>
+      { 1. 프로필 헤더 }
       <header className={styles.profileHeader}>
         <div className={styles.avatarContainer}>
           <img src={user.avatarUrl} alt={`${user.name}'s avatar`} className={styles.avatar} />
@@ -56,13 +128,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
         </div>
       </header>
 
-      {/* 2. 사용자 정보 */}
+      { 2. 사용자 정보 }
       <section className={styles.userInfoSection}>
         <h1 className={styles.name}>{user.name}</h1>
         <p className={styles.bio}>{user.bio}</p>
       </section>
 
-      {/* 3. 사용자 통계 */}
+      { 3. 사용자 통계 }
       <section className={styles.statsSection}>
         <div className={styles.statItem}>
           <span className={styles.statValue}>{stats.posts}</span>
@@ -78,7 +150,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
         </div>
       </section>
 
-      {/* 4. 게시물 그리드 */}
+      { 4. 게시물 그리드 }
       <main className={styles.postsGrid}>
         {posts.map(post => (
           <div key={post.id} className={styles.postItem}>
@@ -88,6 +160,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
       </main>
     </div>
   );
-};
-
+}
+*/
 export default UserProfile;
